@@ -1,0 +1,3 @@
+[submodule "vendor/nanodbc"]
+	path = vendor/nanodbc
+	url = https://github.com/nanodbc/nanodbc
