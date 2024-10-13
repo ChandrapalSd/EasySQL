@@ -1,3 +1,6 @@
 [submodule "vendor/nanodbc"]
 	path = vendor/nanodbc
 	url = https://github.com/nanodbc/nanodbc
+[submodule "vendor/glog"]
+	path = vendor/glog
+	url = https://github.com/google/glog
