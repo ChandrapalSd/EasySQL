@@ -1,15 +1,8 @@
-#include "example_unicode_utils.hpp"
-#include "ESQL.h"
+#include "db.hpp"
 #include <nanodbc/nanodbc.h>
-
+#include <glog/logging.h>
 #include <algorithm>
 #include <cstring>
-#include <iostream>
-
-void usage(std::ostream& out, const std::string& binary_name)
-{
-    out << "usage: " << binary_name << " connection_string" << std::endl;
-}
 
 
 void show(nanodbc::result& results)
@@ -17,57 +10,70 @@ void show(nanodbc::result& results)
     const short columns = results.columns();
     long rows_displayed = 0;
 
-    std::cout << "\nDisplaying " << results.affected_rows() << " rows "
-        << "(" << results.rowset_size() << " fetched at a time):" << std::endl;
+    LOG(INFO) << "\nDisplaying " << results.affected_rows() << " rows "
+        << "(" << results.rowset_size() << " fetched at a time):" ;
 
     // show the column names
-    std::cout << "row\t";
+    LOG(INFO) << "row\t";
     for (short i = 0; i < columns; ++i)
-        std::cout << results.column_name(i) << "\t";
-    std::cout << std::endl;
+        LOG(INFO) << results.column_name(i) << "\t";
+    LOG(INFO) ;
 
     // show the column data for each row
     while (results.next())
     {
-        std::cout << rows_displayed++ << "\t";
+        LOG(INFO) << rows_displayed++ << "\t";
         for (short col = 0; col < columns; ++col)
-            std::cout << "(" << results.get<nanodbc::string>(col, "null") << ")\t";
-        std::cout << std::endl;
+            LOG(INFO) << "(" << results.get<nanodbc::string>(col, "null") << ")\t";
+        LOG(INFO) << std::endl;
     }
+}
+
+void initLogging(const char* argv0)
+{
+    google::InitGoogleLogging(argv0);
+    FLAGS_logtostderr = 1;
+    LOG(INFO) << "Glog is initalized";
+    LOG(INFO) << "Running : " << argv0;
 }
 
 int main(int argc, char* argv[])
 {
-    std::string conStr = "Driver={MySQL ODBC 8.0 Unicode Driver};Server=localhost;Database=testdb;UID=root;PWD=3690;Port=3306;";
+    initLogging(argv[0]);
+    std::string conStr = "Driver={MySQL ODBC 8.0 Unicode Driver};Server=localhost;Database=rbdb;UID=root;PWD=3690;Port=3306;";
+    
+
     if (argc != 2)
     {
-        std::cout << "Using default connection string : " << conStr;
-        //usage(std::cerr, argv[0]);
-        //return EXIT_FAILURE;
+       LOG(WARNING) << "Using default connection string : " << conStr;
     }
-    else {
+    else 
+    {
         conStr = argv[1];
     }
 
     try
     {
-        auto const connection_string(convert(conStr));
-        nanodbc::connection connection(connection_string);
-        std::cout << "Connected with driver " << connection.driver_name() << std::endl;
-        //nanodbc::result results = execute(connection, NANODBC_TEXT("select * from chan;"));
-        //show(results);
+        esql::DB db(conStr);
+        auto tables = db.getAllTables();
+        for (const auto& table : tables) {
+            LOG(INFO) <<"----------------------------- TABLE :- " << table.name << " ------------------------------" ;
+            for (const auto& column : table.columns) {
+                LOG(INFO) << column.name << " (" << column.type << ")";
+            }
+        }
 
-        //esql::getTableData(connection, "chan1");
-        esql::getAllTables(connection);
         /*results.next();
         auto const value = results.get<nanodbc::string>(1);
-        std::cout << std::endl << results.get<int>(NANODBC_TEXT("first")) << ", " << convert(value) << std::endl;
+        LOG(INFO) << std::endl << results.get<int>(NANODBC_TEXT("first")) << ", " << convert(value) ;
         */
+
+        std::cin.ignore(); // Wait for the user to press Enter
         return EXIT_SUCCESS;
     }
     catch (const std::exception& e)
     {
-        std::cerr << e.what() << std::endl;
+        LOG(ERROR) << e.what() ;
     }
     return EXIT_FAILURE;
 }
