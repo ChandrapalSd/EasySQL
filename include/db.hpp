@@ -29,6 +29,8 @@ namespace esql{
 	{
 	public:
 		DB(std::string connStr, bool cacheSchema = false);
+		DB(const DB&) = delete;
+		DB& operator=(const DB&) = delete;
 		~DB();
 
 		std::vector<Table> getAllTables(bool refreshCache=false);
