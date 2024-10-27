@@ -8,8 +8,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 include_directories(include)
 
-file(GLOB SOURCES src/*.cpp)
-file(GLOB HEADERS include/*.hpp)
+file(GLOB SOURCES src/*.cpp src/api/*.cpp)
+file(GLOB HEADERS include/*.hpp nclude/api/*.hpp)
 
 set(BUILD_SHARED_LIBS OFF)
 add_subdirectory(vendor/nanodbc)
