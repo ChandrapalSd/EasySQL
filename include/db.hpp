@@ -28,12 +28,22 @@ namespace esql{
 	class DB
 	{
 	public:
+		struct Info {
+			std::string dbms_name;
+			std::string dbms_version;
+			std::string driver_name;
+			std::string driver_version;
+			std::string database_name;
+			std::string catalog_name;
+		};
+
 		DB(std::string connStr, bool cacheSchema = false);
 		DB(const DB&) = delete;
 		DB& operator=(const DB&) = delete;
 		~DB();
 
 		std::vector<Table> getAllTables(bool refreshCache=false);
+		Info getInfo();
 	private:
 		[[nodiscard]] nanodbc::result executeSql(const std::string statement);
 	public:

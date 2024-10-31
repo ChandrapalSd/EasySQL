@@ -56,15 +56,7 @@ int main(int argc, char* argv[])
     try
     {
         esql::DB db(conStr);
-        auto tables = db.getAllTables();
-        for (const auto& table : tables) {
-            LOG(INFO) <<"----------------------------- TABLE :- " << table.name << " ------------------------------" ;
-            for (const auto& column : table.columns) {
-                LOG(INFO) << column.name << " (" << column.type << ")";
-            }
-        }
-
-        esql::api::run();
+        esql::api::run(db);
         return EXIT_SUCCESS;
     }
     catch (const std::exception& e)

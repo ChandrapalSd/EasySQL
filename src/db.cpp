@@ -37,6 +37,19 @@ namespace esql {
         return this->tables;
 	}
 
+	DB::Info DB::getInfo()
+	{
+		return 
+		{
+			.dbms_name = _connection.dbms_name(),
+			.dbms_version = _connection.dbms_version(),
+			.driver_name = _connection.driver_name(),
+			.driver_version = _connection.driver_version(),
+			.database_name = _connection.database_name(),
+			.catalog_name = _connection.catalog_name(),
+		};
+	}
+
 	nanodbc::result DB::executeSql(const std::string statement)
 	{
 		if (traceSql)
