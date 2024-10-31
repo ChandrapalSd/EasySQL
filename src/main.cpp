@@ -1,8 +1,9 @@
+#include "log.hpp"
 #include "db.hpp"
 #include <nanodbc/nanodbc.h>
-#include <glog/logging.h>
 #include <algorithm>
 #include <cstring>
+#include <api/api.hpp>
 
 
 void show(nanodbc::result& results)
@@ -63,12 +64,7 @@ int main(int argc, char* argv[])
             }
         }
 
-        /*results.next();
-        auto const value = results.get<nanodbc::string>(1);
-        LOG(INFO) << std::endl << results.get<int>(NANODBC_TEXT("first")) << ", " << convert(value) ;
-        */
-
-        std::cin.ignore(); // Wait for the user to press Enter
+        esql::api::run();
         return EXIT_SUCCESS;
     }
     catch (const std::exception& e)

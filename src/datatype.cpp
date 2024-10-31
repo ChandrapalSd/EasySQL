@@ -1,5 +1,5 @@
 #include "datatype.hpp"
-#include <glog/logging.h>
+#include "log.hpp"
 
 #ifdef _WIN32
 	#ifndef __MINGW32__

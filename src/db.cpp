@@ -1,6 +1,6 @@
 #include "db.hpp"
 #include "datatype.hpp"
-#include <glog/logging.h>
+#include "log.hpp"
 #include <format>
 
 namespace esql {
