@@ -23,7 +23,7 @@ namespace esql {
 		LOG(INFO) << "Database connection freed";
 	}
 
-	std::vector<Table> DB::getAllTables(bool refreshCache) {
+	const std::vector<Table>& DB::getAllTables(bool refreshCache) {
         if (refreshCache || this->tables.size() == 0) {
             nanodbc::catalog catalog(_connection);
             auto tables = catalog.find_tables();
@@ -35,6 +35,12 @@ namespace esql {
             this->tables = tableVec;
         }
         return this->tables;
+	}
+
+	std::optional<Table> DB::getTable(std::string_view tableName) {
+		const auto& tables = getAllTables();
+		auto table = std::find_if(tables.begin(), tables.end(), [&tableName](const Table& table) {return table.name == tableName; });
+		return table != tables.end() ? std::make_optional(*table) : std::nullopt;
 	}
 
 	DB::Info DB::getInfo()

@@ -2,6 +2,7 @@
 #include <nanodbc/nanodbc.h>
 #include <iostream>
 #include <memory>
+#include <string>
 
 #include "datatype.hpp"
 
@@ -42,7 +43,8 @@ namespace esql{
 		DB& operator=(const DB&) = delete;
 		~DB();
 
-		std::vector<Table> getAllTables(bool refreshCache=false);
+		const std::vector<Table>& getAllTables(bool refreshCache=false);
+		std::optional<Table> getTable(std::string_view tableName);
 		Info getInfo();
 	private:
 		[[nodiscard]] nanodbc::result executeSql(const std::string statement);

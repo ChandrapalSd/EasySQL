@@ -28,22 +28,17 @@ namespace esql::api {
 			std::function<void(const drogon::HttpResponsePtr&)>&& callback) {
 
 				LOG(INFO) << "GET : /dbInfo";
-				auto resp = drogon::HttpResponse::newHttpResponse();
 				auto info = getDB().getInfo();
-				resp->setBody(std::format(
-					"dbms_name: {} \n"
-					"dbms_version: {} \n"
-					"driver_name: {} \n"
-					"driver_version: {} \n"
-					"database_name: {} \n"
-					"catalog_name: {} \n",
-					info.dbms_name,
-					info.dbms_version,
-					info.driver_name,
-					info.driver_version,
-					info.database_name,
-					info.catalog_name
-				));
+
+				Json::Value json;
+				json["dbms_name"] = info.dbms_name;
+				json["dbms_version"] = info.dbms_version;
+				json["driver_name"] = info.driver_name;
+				json["driver_version"] = info.driver_version;
+				json["database_name"] = info.database_name;
+				json["catalog_name"] = info.catalog_name;
+
+				auto resp = drogon::HttpResponse::newHttpJsonResponse(json);
 
 				callback(resp);
 			}, { drogon::Get });
